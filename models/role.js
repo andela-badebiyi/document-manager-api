@@ -12,7 +12,7 @@ var roleSchema = new mongoose.Schema({
   }
 });
 
-roleSchema.plugin(uniqueValidator);
+roleSchema.plugin(uniqueValidator, {message: 'This {PATH} already exists'});
 roleSchema.plugin(autoIncrement.plugin, 'Role');
 
 module.exports = mongoose.model('Role', roleSchema);

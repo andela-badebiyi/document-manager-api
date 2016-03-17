@@ -11,7 +11,7 @@ var userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'You need to enter a username'],
     maxlength: [50, 'Username is too long'],
-    unique: [true, 'This username already exists']
+    unique: true
   },
   firstname: {
     type: String,
@@ -25,7 +25,7 @@ var userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'You need to enter a username'],
     match: [/\b[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}\b/gi, "This is not a valid email"],
-    unique: [true, 'This email has already been chosen']
+    unique: true
   },
   password: {
     type: String,
@@ -38,6 +38,6 @@ var userSchema = new mongoose.Schema({
   }
 });
 
-userSchema.plugin(uniqueValidator);
+userSchema.plugin(uniqueValidator, {message: 'This {PATH} already exists'});
 userSchema.plugin(autoIncrement.plugin, 'User');
 module.exports = mongoose.model('User', userSchema);;

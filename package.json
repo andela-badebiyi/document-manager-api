@@ -4,7 +4,7 @@
   "description": "An API for a document management system",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jasmine-node spec"
   },
   "keywords": [
     "document",
@@ -18,6 +18,10 @@
     "jasmine-node": "*",
     "mongoose": "4.4.7",
     "mongoose-unique-validator": "1.0.*",
-    "mongoose-auto-increment": "5.0.*"
+    "mongoose-auto-increment": "5.0.*",
+    "mongoose-timestamp": "0.5.*",
+    "express": "4.*",
+    "body-parser": "*",
+    "jsonwebtoken": "*"
   }
 }
