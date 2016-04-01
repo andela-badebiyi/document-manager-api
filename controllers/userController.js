@@ -1,7 +1,5 @@
-var mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
 var userModel = require('../models/user');
-var config = require('../config');
 var helpers = require('../helpers/helpers');
 
 exports.register = function(req, res){
@@ -37,21 +35,21 @@ exports.getAllUsers = function(req, res){
       res.json(data);
     }
   });
-}
+};
 
 exports.getUser = function(req, res){
   userModel.findOne({username: req.params.username}, function(err, user){
     if (err) {
       res.json({message: 'User couldn\'t be retrieved, try again later'});
     } else {
-      if (user == null){
+      if (user === null){
         res.json({message: 'This user does not exist'});
       } else {
         res.json(helpers.filterOutput(user, ['__v', 'password', '_id', 'role_id']));
       }
     }
   });
-}
+};
 
 exports.updateUser = function(req, res){
   var updateValues = fetchUpdateData(req.body);
@@ -60,14 +58,14 @@ exports.updateUser = function(req, res){
     if (err) {
       res.json({message: 'An error occcured during update, please try again later'});
     } else {
-      if (numAffected.nModified == 0 ) {
+      if (numAffected.nModified === 0 ) {
         res.json({message: 'User not found'});
       } else {
         res.json({message: 'User successfully updated'});
       }
     }
   });
-}
+};
 
 exports.deleteUser = function(req, res){
   userModel.remove({username: req.params.username}, function(err){
@@ -76,10 +74,9 @@ exports.deleteUser = function(req, res){
     } else {
       res.json({message: 'User successfully removed'});
     }
-  })
-}
+  });
+};
 
-mongoose.connect(config.database);
 
 function noBlankInput(userData){
   if(userData.username !== undefined && userData.email !== undefined &&

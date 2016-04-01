@@ -1,17 +1,25 @@
 var express = require('express');
 var bodyparser = require('body-parser');
-var UserModel = require('./models/user');
-var DocumentModel = require('./models/document');
-var RoleModel = require('./models/role');
 var config = require('./config');
 var authRoutes = require('./controllers/authController');
 var userRoutes = require('./controllers/userController');
 var documentRoutes = require('./controllers/documentController');
+var roleRoutes = require('./controllers/roleController');
+var middleware = require('./middleware/middlewares');
 
 var app = express();
+var router = express.Router();
+var roleRouter = express.Router();
 
-//use body parser
+//register middleware for router
+router.use(middleware.userIsAuthenticated);
+roleRouter.use(middleware.userIsAdmin);
+
+//use this middleware on all routes
 app.use(bodyparser.urlencoded({extended: true}));
+//app.use(middleware.logInfo);
+
+/** these routes require no form of authentication or validation **/
 
 //homepage
 app.get('/', function(req, res){
@@ -19,49 +27,62 @@ app.get('/', function(req, res){
 });
 
 //log a user in
-app.post('/users/login',  function(req, res){
-  authRoutes.login(req, res);
-});
+app.post('/users/login', authRoutes.login);
 
 //create a new user
-app.post('/users', function(req, res){
-  userRoutes.register(req, res);
-});
+app.post('/users', userRoutes.register);
+
+/** end of no-validation-needed routes **/
+
 
 //fetch all users
-app.get('/users', function(req, res){
-  userRoutes.getAllUsers(req, res);
-});
+router.get('/users', userRoutes.getAllUsers);
 
 //fetch user by username
-app.get('/users/:username', function(req, res){
-  userRoutes.getUser(req, res);
-});
+router.get('/users/:username', userRoutes.getUser);
 
 //fetch update user by username
-app.patch('/users/:username', function(req, res){
-	userRoutes.updateUser(req, res);
-});
+router.patch('/users/:username', middleware.allowedToModify, userRoutes.updateUser);
 
 //delete a user by username
-app.delete('/users/:username', function(req, res){
-	userRoutes.deleteUser(req, res);
-});
+router.delete('/users/:username', middleware.allowedToModify, userRoutes.deleteUser);
 
 //create a document
-app.post('/documents', function(req, res){
-	documentRoutes.create(req, res);
-});
+router.post('/documents', documentRoutes.create);
 
 //fetch all documents
-app.get('/documents', function(req, res){
-	documentRoutes.getAll(req, res);
-});
+router.get('/documents', documentRoutes.getAll);
 
 //fetch a single document
-app.get('/documents/:id', function(req, res){
-	documentRoutes.getDocument(req, res);
-});
+router.get('/documents/:id', documentRoutes.getDocument);
+
+//delete a document by document_id
+router.delete('/documents/:id', middleware.allowedToModify, documentRoutes.deleteDocument);
+
+//update a document by id
+router.patch('/documents/:id', middleware.allowedToModify, documentRoutes.updateDocument);
+
+//fetch user documents
+router.get('/users/:username/documents', documentRoutes.getUserDocuments);
+
+//route to create roles
+roleRouter.post('/', rolesRoutes.create);
+
+//route to update roles
+roleRouter.patch('/:id', rolesRoutes.update);
+
+//route to delete role
+roleRouter.delete('/:id', rolesRoutes.delete);
+
+//route to show all roles
+roleRouter.get('/', rolesRoutes.getAll);
+
+//mount router
+app.use('/', router);
+
+//mount roleRouter
+app.use('/roles', roleRouter);
 
 
+//deploy
 app.listen(3000);

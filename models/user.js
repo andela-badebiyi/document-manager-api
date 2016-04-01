@@ -40,4 +40,4 @@ var userSchema = new mongoose.Schema({
 
 userSchema.plugin(uniqueValidator, {message: 'This {PATH} already exists'});
 userSchema.plugin(autoIncrement.plugin, 'User');
-module.exports = mongoose.model('User', userSchema);;
+module.exports = mongoose.model('User', userSchema);
