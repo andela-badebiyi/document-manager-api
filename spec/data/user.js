@@ -4,7 +4,8 @@ module.exports = {
 		firstname: 'Bodunde',
 		lastname: 'Adebiyi',
 		email: 'bodun@gmail.com',
-		password: 'pass123'
+		password: 'pass123',
+		role: 'user'
 	},
 	kikelomo: {
 		username: 'kellyville',
@@ -46,6 +47,6 @@ module.exports = {
 		lastname: 'Yogalos',
 		email: 'admin@gmail.com',
 		password: 'pass123',
-		role_id: 1
+		role: 'admin'
 	}
 };

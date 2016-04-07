@@ -28,8 +28,8 @@ var userSchema = new mongoose.Schema({
     required: [true, 'You need to enter a password'],
     minlength: [6, 'Password is too short']
   },
-  role_id: {
-    type: Number,
+  role: {
+    type: String,
     required: [true, 'You need a role id']
   }
 });

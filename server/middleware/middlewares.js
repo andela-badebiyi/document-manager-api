@@ -18,7 +18,7 @@ exports.allowedToModify = function(req, res, next){
 		if(err){
 			res.json({status: 'failed', response: 'Your token is invalid'});
 		} else{
-			if(decoded._doc.role_id == 1){
+			if(decoded._doc.role == 'admin'){
 				next();
 			} else {
 				if(/\/users\//.test(req.originalUrl)){
@@ -46,7 +46,7 @@ exports.userIsAdmin = function(req, res, next){
 		if(err){
 			res.json({status: 'failed', response: 'Your token is invalid'});
 		} else {
-			if(decoded._doc.role_id == 1){
+			if(decoded._doc.role == 'admin'){
 				next();
 			} else {
 				res.json({status: 'failed', response: 'You are not an admin user'});

@@ -9,7 +9,7 @@ exports.register = function(req, res){
     email: req.body.email,
     firstname: req.body.firstname,
     lastname: req.body.lastname,
-    role_id: 0
+    role: 'user'
   };
 
   if (noBlankInput(userData)) {
@@ -45,7 +45,7 @@ exports.getUser = function(req, res){
       if (user === null){
         res.json({status: 'failed', response: 'This user does not exist'});
       } else {
-        res.json({status: 'success', response: helpers.filterOutput(user, ['__v', 'password', '_id', 'role_id'])});
+        res.json({status: 'success', response: helpers.filterOutput(user, ['__v', 'password', '_id', 'role'])});
       }
     }
   });
@@ -90,7 +90,7 @@ function noBlankInput(userData){
 function parseUserRecords(users){
   var parsedResult = [];
   users.forEach(function(element){
-    var usr = helpers.filterOutput(element, ['__v','password', '_id', 'role_id']);
+    var usr = helpers.filterOutput(element, ['__v','password', '_id', 'role']);
     parsedResult.push(usr);
   });
   return parsedResult;

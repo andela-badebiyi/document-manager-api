@@ -10,7 +10,7 @@ describe('GET /', function(){
 	it('should say welcome', function(done){
 		request.get('/').expect(200).end(function(err, res){
 			expect(err).toBe(null);
-			expect(JSON.parse(res.text).response).toBe("Welcome to our home page");
+			expect(res.body.response).toBe("Welcome to our home page");
 			done();
 		});
 	});
@@ -27,8 +27,8 @@ describe('user registration', function(){
 	it('should return "incomplete data" for incomplete fields', function(done){
 		request.post('/users').set('Content-Type', 'application/x-www-form-urlencoded')
 		.send(testUsers.no_email).end(function(err, res){
-			expect(JSON.parse(res.text).response).toBe("Incomplete data");
-			expect(JSON.parse(res.text).status).toBe("failed");
+			expect(res.body.response).toBe("Incomplete data");
+			expect(res.body.status).toBe("failed");
 			done();
 		});
 	});
@@ -37,9 +37,9 @@ describe('user registration', function(){
 	it('should reject invalid emails', function(done){
 		request.post('/users').set('Content-Type', 'application/x-www-form-urlencoded').
 		send(testUsers.bodun_conflict).end(function(err, res){
-			expect(JSON.parse(res.text).status).toBe('failed');
-			expect(JSON.parse(res.text).error).not.toBe(null);
-			expect(JSON.parse(res.text).error[0].message).toBe('This is not a valid email');
+			expect(res.body.status).toBe('failed');
+			expect(res.body.error).not.toBe(null);
+			expect(res.body.error[0].message).toBe('This is not a valid email');
 			done();
 		});
 	});
@@ -48,9 +48,9 @@ describe('user registration', function(){
 	it('should reject a password lesser than 6 digits', function(done){
 		request.post('/users').set('Content-Type', 'application/x-www-form-urlencoded').
 		send(testUsers.short_password).end(function(err, res){
-			expect(JSON.parse(res.text).status).toBe('failed');
-			expect(JSON.parse(res.text).error).not.toBe(null);
-			expect(JSON.parse(res.text).error[0].message).toBe('Password is too short');
+			expect(res.body.status).toBe('failed');
+			expect(res.body.error).not.toBe(null);
+			expect(res.body.error[0].message).toBe('Password is too short');
 			done();
 		});
 	});
@@ -58,7 +58,7 @@ describe('user registration', function(){
 	it('should accept valid user and register user', function(done){
 		request.post('/users').set('Content-Type', 'application/x-www-form-urlencoded').
 		send(testUsers.bodunde).end(function(err, res){
-			expect(JSON.parse(res.text).status).toBe('success');
+			expect(res.body.status).toBe('success');
 			done();
 		});
 	});
@@ -76,8 +76,8 @@ describe('user login', function(){
 	it('should reject invalid username', function(done){
 		request.post('/users/login').set('Content-Type', 'application/x-www-form-urlencoded').
 		send({username: 'unknownuser', password: 'unknown_pass'}).end(function(err, res){
-			expect(JSON.parse(res.text).status).toBe('failed');
-			expect(JSON.parse(res.text).response).toBe('Incorrect username');
+			expect(res.body.status).toBe('failed');
+			expect(res.body.response).toBe('Incorrect username');
 			done();
 		});
 	});
@@ -85,8 +85,8 @@ describe('user login', function(){
 	it('should reject valid username but invalid password', function(done){
 		request.post('/users/login').set('Content-Type', 'application/x-www-form-urlencoded').
 		send({username: testUsers.bodunde.username, password: 'invalid_password'}).end(function(err, res){
-			expect(JSON.parse(res.text).status).toBe('failed');
-			expect(JSON.parse(res.text).response).toBe('You submitted an incorrect password');
+			expect(res.body.status).toBe('failed');
+			expect(res.body.response).toBe('You submitted an incorrect password');
 			done();
 		});
 	});
@@ -94,8 +94,8 @@ describe('user login', function(){
 	it('should return accept valid username and password and return token', function(done){
 		request.post('/users/login').set('Content-Type', 'application/x-www-form-urlencoded').
 		send({username: testUsers.bodunde.username, password: testUsers.bodunde.password}).end(function(err, res){
-			expect(JSON.parse(res.text).token).not.toBe(undefined);
-			expect(JSON.parse(res.text).token.length).toBeGreaterThan(20);
+			expect(res.body.token).not.toBe(undefined);
+			expect(res.body.token.length).toBeGreaterThan(20);
 			done();
 		});
 	});
@@ -111,34 +111,34 @@ describe('fetch users', function(){
 
 	it('should not return all users if token is invalid', function(done){
 		request.get('/users').set('token', 'invalidtoken').end(function(err, res){
-			expect(JSON.parse(res.text).response).toBe('Your token is invalid');
-			expect(JSON.parse(res.text).status).toBe('failed');
+			expect(res.body.response).toBe('Your token is invalid');
+			expect(res.body.status).toBe('failed');
 			done();
 		});
 	});
 
 	it('should return list of all users if token is valid', function(done){
 		request.get('/users').set('token', usrToken).end(function(err, res){
-			expect(JSON.parse(res.text).status).toBe('success');
-			expect(JSON.parse(res.text).response.length).toBeGreaterThan(0);
+			expect(res.body.status).toBe('success');
+			expect(res.body.response.length).toBeGreaterThan(0);
 			done();
 		});
 	});
 
 	it('should return "user does not exist" for invalid single user', function(done){
 		request.get('/users/badUserName').set('token', usrToken).end(function(err, res){
-			expect(JSON.parse(res.text).status).toBe('failed');
-			expect(JSON.parse(res.text).response).toBe('This user does not exist');
+			expect(res.body.status).toBe('failed');
+			expect(res.body.response).toBe('This user does not exist');
 			done();
 		});
 	});
 
 	it('should fetch single user by username', function(done){
 		request.get('/users/'+testUsers.bodunde.username).set('token', usrToken).end(function(err, res){
-			expect(JSON.parse(res.text).status).toBe('success');
-			expect(JSON.parse(res.text).response.firstname).toBe(testUsers.bodunde.firstname);
-			expect(JSON.parse(res.text).response.lastname).toBe(testUsers.bodunde.lastname);
-			expect(JSON.parse(res.text).response.email).toBe(testUsers.bodunde.email);
+			expect(res.body.status).toBe('success');
+			expect(res.body.response.firstname).toBe(testUsers.bodunde.firstname);
+			expect(res.body.response.lastname).toBe(testUsers.bodunde.lastname);
+			expect(res.body.response.email).toBe(testUsers.bodunde.email);
 			done();
 		});
 	});
@@ -157,8 +157,8 @@ describe('update user', function(){
 	it('should fail if you try to modify a user that isn\'t you', function(done){
 		request.patch('/users/anotherUser').set('token', usrToken).set('Content-Type', 'application/x-www-form-urlencoded')
 		.send({email: 'newemail@gmail.com'}).end(function(err, res){
-			expect(JSON.parse(res.text).status).toBe('failed');
-			expect(JSON.parse(res.text).response).toBe('You are not authorized to perform on action on this user');
+			expect(res.body.status).toBe('failed');
+			expect(res.body.response).toBe('You are not authorized to perform on action on this user');
 			done();
 		});
 	});
@@ -168,8 +168,8 @@ describe('update user', function(){
 	it('should successfully update valid user', function(done){
 		request.patch('/users/'+testUsers.bodunde.username).set('token', usrToken).set('Content-Type', 'application/x-www-form-urlencoded')
 		.send({email: 'newemail@gmail.com'}).end(function(err, res){
-			expect(JSON.parse(res.text).status).toBe('success');
-			expect(JSON.parse(res.text).response).toBe('User successfully updated');
+			expect(res.body.status).toBe('success');
+			expect(res.body.response).toBe('User successfully updated');
 			done();
 		});
 	});
@@ -180,7 +180,7 @@ describe('update user', function(){
 			request.patch('/users/'+testUsers.bodunde.username).set('token', token).set('Content-Type', 'application/x-www-form-urlencoded')
 			.send({email: 'jdoe@yahoo.com'}).end(function(err, res){
 				expect(err).toBe(null);
-				expect(JSON.parse(res.text).response).toBe("User successfully updated");
+				expect(res.body.response).toBe("User successfully updated");
 				done();
 			});
 		});
@@ -199,16 +199,16 @@ describe('delete user', function(){
 
 	it('should fail if you try to delete a user that isn\'t you', function(done){
 		request.delete('/users/anotherUser').set('token', usrToken).end(function(err, res){
-			expect(JSON.parse(res.text).status).toBe('failed');
-			expect(JSON.parse(res.text).response).toBe('You are not authorized to perform on action on this user');
+			expect(res.body.status).toBe('failed');
+			expect(res.body.response).toBe('You are not authorized to perform on action on this user');
 			done();
 		});
 	});
 
 	it('should delete user if user is you', function(done){
 		request.delete('/users/'+testUsers.bodunde.username).set('token', usrToken).end(function(err, res){
-			expect(JSON.parse(res.text).status).toBe('success');
-			expect(JSON.parse(res.text).response).toBe('User successfully removed');
+			expect(res.body.status).toBe('success');
+			expect(res.body.response).toBe('User successfully removed');
 			done();
 		});
 	});
@@ -216,8 +216,8 @@ describe('delete user', function(){
 	it('should any user if you are admin', function(done){
 		th.login(testUsers.admin, request, function(token){
 			request.delete('/users/'+testUsers.bodunde.username).set('token', token).end(function(err, res){
-				expect(JSON.parse(res.text).status).toBe('success');
-				expect(JSON.parse(res.text).response).toBe('User successfully removed');
+				expect(res.body.status).toBe('success');
+				expect(res.body.response).toBe('User successfully removed');
 				done();
 			});
 		});
