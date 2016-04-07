@@ -1,5 +1,5 @@
 var jwt = require('jsonwebtoken');
-var config = require('../config.js');
+var config = require('../../config.js');
 exports.errorParser = function (errs){
   var errors = [];
   for(var key in errs){
@@ -9,11 +9,11 @@ exports.errorParser = function (errs){
     }
   }
   return errors;
-}
+};
 
 exports.getOwner = function(token){
 	return jwt.verify(token, config.secretkey)._doc;
-}
+};
 
 exports.filterOutput = function(data, field){
 	var result = {};
@@ -25,4 +25,4 @@ exports.filterOutput = function(data, field){
 		}
 	}
 	return result;
-}
+};

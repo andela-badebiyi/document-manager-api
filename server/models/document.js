@@ -1,11 +1,7 @@
-var mongoose = require('mongoose');
+var mongoose = require('../database/db');
 var uniqueValidator = require('mongoose-unique-validator');
 var autoIncrement = require('mongoose-auto-increment');
 var timestamps = require('mongoose-timestamp');
-
-//Initialize mongoose-auto-increment
-var connection = mongoose.createConnection("mongodb://localhost/dms");
-autoIncrement.initialize(connection);
 
 var documentSchema = new mongoose.Schema({
   owner_id: {

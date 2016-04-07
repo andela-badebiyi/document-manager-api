@@ -22,6 +22,10 @@
     "mongoose-timestamp": "0.5.*",
     "express": "4.*",
     "body-parser": "*",
-    "jsonwebtoken": "*"
+    "jsonwebtoken": "*",
+    "moment": "*",
+    "supertest": "*",
+    "mockgoose": "*",
+    "jasmine": "*"
   }
 }

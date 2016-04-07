@@ -1,10 +1,6 @@
-var mongoose = require('mongoose');
+var mongoose = require('../database/db');
 var autoIncrement = require('mongoose-auto-increment');
 var uniqueValidator = require('mongoose-unique-validator');
-
-//Initialize mongoose-auto-increment
-var connection = mongoose.createConnection("mongodb://localhost/dms");
-autoIncrement.initialize(connection);
 
 var userSchema = new mongoose.Schema({
   username: {
@@ -24,7 +20,7 @@ var userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: [true, 'You need to enter a username'],
-    match: [/\b[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}\b/gi, "This is not a valid email"],
+    match: [/^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/, "This is not a valid email"],
     unique: true
   },
   password: {
@@ -41,3 +37,4 @@ var userSchema = new mongoose.Schema({
 userSchema.plugin(uniqueValidator, {message: 'This {PATH} already exists'});
 userSchema.plugin(autoIncrement.plugin, 'User');
 module.exports = mongoose.model('User', userSchema);
+//match: [/\b[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}\b/gi, "This is not a valid email"],

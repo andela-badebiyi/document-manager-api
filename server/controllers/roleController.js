@@ -1,4 +1,4 @@
-var roleModel = require('./models/role');
+var roleModel = require('../models/role');
 var helpers = require('../helpers/helpers');
 
 exports.create = function(req, res){

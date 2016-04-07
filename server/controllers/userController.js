@@ -16,23 +16,23 @@ exports.register = function(req, res){
     new userModel(userData).save(function(err, user){
       if(err){
         var errors = helpers.errorParser(err.errors);
-        res.json({message: 'You account could not be created', error: errors});
+        res.json({status: 'failed', response: 'You account could not be created', error: errors});
       } else {
-        res.json({message: 'You have successfully registered'});
+        res.json({status: 'success', response: 'You have successfully registered'});
       }
     });
   } else {
-    res.json({message: 'Incomplete data'});
+    res.json({status: 'failed', response: 'Incomplete data'});
   }
 };
 
 exports.getAllUsers = function(req, res){
   userModel.find({}, function(err, users){
     if (err) {
-      res.json({message: 'files could not be retrieved, pls try again later'});
+      res.json({status: 'failed', response: 'files could not be retrieved, pls try again later'});
     } else {
       var data = parseUserRecords(users);
-      res.json(data);
+      res.json({status: 'success', response: data});
     }
   });
 };
@@ -40,12 +40,12 @@ exports.getAllUsers = function(req, res){
 exports.getUser = function(req, res){
   userModel.findOne({username: req.params.username}, function(err, user){
     if (err) {
-      res.json({message: 'User couldn\'t be retrieved, try again later'});
+      res.json({status: 'failed', response: 'User couldn\'t be retrieved, try again later'});
     } else {
       if (user === null){
-        res.json({message: 'This user does not exist'});
+        res.json({status: 'failed', response: 'This user does not exist'});
       } else {
-        res.json(helpers.filterOutput(user, ['__v', 'password', '_id', 'role_id']));
+        res.json({status: 'success', response: helpers.filterOutput(user, ['__v', 'password', '_id', 'role_id'])});
       }
     }
   });
@@ -56,12 +56,12 @@ exports.updateUser = function(req, res){
   userModel.update({username: req.params.username}, updateValues, { multi: true },
   function(err, numAffected){
     if (err) {
-      res.json({message: 'An error occcured during update, please try again later'});
+      res.json({status: 'failed', response: 'An error occcured during update, please try again later'});
     } else {
       if (numAffected.nModified === 0 ) {
-        res.json({message: 'User not found'});
+        res.json({status: 'failed', response: 'User not found'});
       } else {
-        res.json({message: 'User successfully updated'});
+        res.json({status: 'success', response: 'User successfully updated'});
       }
     }
   });
@@ -70,9 +70,9 @@ exports.updateUser = function(req, res){
 exports.deleteUser = function(req, res){
   userModel.remove({username: req.params.username}, function(err){
     if (err) {
-      res.json({message: 'Error deleting this username'});
+      res.json({status: 'failed', response: 'Error deleting this username'});
     } else {
-      res.json({message: 'User successfully removed'});
+      res.json({status: 'success', response: 'User successfully removed'});
     }
   });
 };
