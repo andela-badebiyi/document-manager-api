@@ -5,12 +5,13 @@ var mongoose = require('../server/database/db');
 var testRoles = require('./data/role');
 var testUsers = require('./data/user');
 var th = require('../server/helpers/testHelpers');
+var seed = require('../server/database/seed');
 var usrToken, userId, guestId, adminId;
 
 describe('create roles', function(){
 	beforeEach(function(done){
 		th.dropRoleDatabase(mongoose, function(err){
-			th.roleSeeder(testRoles, function(){
+			seed.role(()=>{
 				th.login(testUsers.admin, request, function(token){
 					usrToken = token;
 					done();
@@ -52,7 +53,7 @@ describe('create roles', function(){
 describe('update roles', function(){
 	beforeEach(function(done){
 		th.dropRoleDatabase(mongoose, function(err){
-			th.roleSeeder(testRoles, function(user_id, admin_id, guest_id){
+			seed.role(function(user_id, admin_id, guest_id){
 				th.login(testUsers.admin, request, function(token){
 					userId = user_id;
 					adminId = admin_id;
@@ -97,7 +98,7 @@ describe('update roles', function(){
 describe('delete roles', function(){
 	beforeEach(function(done){
 		th.dropRoleDatabase(mongoose, function(err){
-			th.roleSeeder(testRoles, function(user_id, admin_id, guest_id){
+			seed.role(function(user_id, admin_id, guest_id){
 				th.login(testUsers.admin, request, function(token){
 					userId = user_id;
 					adminId = admin_id;
@@ -131,7 +132,7 @@ describe('delete roles', function(){
 describe('get roles', function(){
 	beforeEach(function(done){
 		th.dropRoleDatabase(mongoose, function(err){
-			th.roleSeeder(testRoles, function(user_id, admin_id, guest_id){
+			seed.role(function(user_id, admin_id, guest_id){
 				th.login(testUsers.admin, request, function(token){
 					userId = user_id;
 					adminId = admin_id;

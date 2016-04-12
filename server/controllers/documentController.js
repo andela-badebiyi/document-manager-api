@@ -51,7 +51,7 @@ exports.getDocument = function(req, res){
 			res.json({status: 'failed', response: 'Error retrieving document'});
 		} else {
 			if(data)
-				res.json(helpers.filterOutput(data, ['_id', '__v']));
+				res.json({ status: 'success', response: helpers.filterOutput(data, ['_id', '__v'])});
 			else
 				res.json({status: 'success', response: 'this document does not exist'});
 		}
@@ -135,7 +135,7 @@ function fetchUpdateData(postBody){
 
 function parseDate(date){
 	var r_arr = date.split('-').map(function(num, element){
-		if(element == 1) return Number(num) - 1;
+		if(element == 1) return Number(num);
 		return Number(num);
 	});
 	return r_arr;

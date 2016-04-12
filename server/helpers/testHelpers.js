@@ -2,28 +2,28 @@ var usr = require('../models/user');
 var role = require('../models/role');
 
 
-exports.dropUserDatabase = function(mongoose, cb){
-	mongoose.connection.collections['users'].drop(function(err) {
+exports.dropUserDatabase = (mongoose, cb) => {
+	mongoose.connection.collections['users'].drop((err) => {
 		cb(err);
 	});
 };
 
-exports.dropRoleDatabase = function(mongoose, cb){
-	mongoose.connection.collections['roles'].drop(function(err) {
+exports.dropRoleDatabase = (mongoose, cb) => {
+	mongoose.connection.collections['roles'].drop((err) => {
 		cb(err);
 	});
 };
 
-exports.dropDocumentDatabase = function(mongoose, cb){
-	mongoose.connection.collections['documents'].drop(function(err) {
+exports.dropDocumentDatabase = (mongoose, cb) => {
+	mongoose.connection.collections['documents'].drop((err) => {
 		cb(err);
 	});
 };
 
-exports.register = function(userData, cb){
-	usr.findOne({username: userData.username}, function(err, data){
+exports.register = (userData, cb) => {
+	usr.findOne({username: userData.username}, (err, data) => {
 		if(!data){
-			new usr.save(userData, function(err, done){
+			new usr.save(userData, (err, done) => {
 				cb();
 			});
 		} else{
@@ -32,24 +32,28 @@ exports.register = function(userData, cb){
 	});
 };
 
-exports.login = function(userData, request, cb){
-	registerUser(userData, function(){
+exports.login = (userData, request, cb) => {
+	registerUser(userData, () => {
 		request.post('/users/login').set('Content-Type', 'application/x-www-form-urlencoded').
-		send({username: userData.username, password: userData.password}).end(function(err, res){
+		send({username: userData.username, password: userData.password}).end((err, res) => {
 			var usrToken = JSON.parse(res.text).token;
 			cb(usrToken);
 		});
 	});
 };
 
-exports.roleSeeder = function(seed, cb){
-	role.create(seed.user, seed.admin, seed.guest, function(err, user, admin, guest){
-		cb(user._id, admin._id, guest._id);
-	});
-};
+exports.formatDate = (date) => {
+	var d = new Date(date);
+	var year = d.getFullYear() < 10 ? '0'+d.getFullYear() : d.getFullYear();
+	var month = d.getMonth() < 10 ? '0'+d.getMonth() : d.getMonth();
+	var day = d.getDate() < 10 ? '0'+d.getDate() : d.getDate();
+	return year + "-" + month + "-" + day;
+}
+
+
 
 function registerUser(userData, cb){
-	usr.findOne({username: userData.username}, function(err, data){
+	usr.findOne({username: userData.username}, (err, data) => {
 		if(!data){
 			new usr(userData).save(function(err, user){
 				cb();
