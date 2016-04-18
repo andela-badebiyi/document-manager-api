@@ -1,6 +1,7 @@
 var jwt = require('jsonwebtoken');
 var userModel = require('../models/user');
 var config = require('../../config');
+var bcrypt = require('bcrypt');
 
 exports.login = function(req, res){
   //fetch username and password from post vars
@@ -14,7 +15,7 @@ exports.login = function(req, res){
       if (user === null) {
         res.json({status: 'failed', response: 'Incorrect username'});
       } else {
-        if(password !== user.password){
+        if(!bcrypt.compareSync(password, user.password)){
           res.json({status: 'failed', response: 'You submitted an incorrect password'});
         } else {
           res.json({token: fetchToken(user)});

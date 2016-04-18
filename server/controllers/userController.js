@@ -1,6 +1,7 @@
 var jwt = require('jsonwebtoken');
 var userModel = require('../models/user');
 var helpers = require('../helpers/helpers');
+var config = require('../../config');
 
 exports.register = function(req, res){
   var userData = {
@@ -11,7 +12,6 @@ exports.register = function(req, res){
     lastname: req.body.lastname,
     role: 'user'
   };
-
   if (noBlankInput(userData)) {
     new userModel(userData).save(function(err, user){
       if(err){

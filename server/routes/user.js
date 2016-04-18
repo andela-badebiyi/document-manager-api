@@ -12,4 +12,6 @@ module.exports = function(router){
 
 	//fetch update user by username
 	router.patch('/users/:username', middleware.allowedToModify, userRoutes.updateUser);
+
+  router.put('/users/:username', middleware.allowedToModify, userRoutes.updateUser);
 };

@@ -1,5 +1,6 @@
 var usr = require('../models/user');
 var role = require('../models/role');
+var bcrypt = require('bcrypt');
 
 
 exports.dropUserDatabase = (mongoose, cb) => {
@@ -23,6 +24,7 @@ exports.dropDocumentDatabase = (mongoose, cb) => {
 exports.register = (userData, cb) => {
 	usr.findOne({username: userData.username}, (err, data) => {
 		if(!data){
+			userData.password = bcrypt.hashSync(userData.password, 8);
 			new usr.save(userData, (err, done) => {
 				cb();
 			});
@@ -36,7 +38,7 @@ exports.login = (userData, request, cb) => {
 	registerUser(userData, () => {
 		request.post('/users/login').set('Content-Type', 'application/x-www-form-urlencoded').
 		send({username: userData.username, password: userData.password}).end((err, res) => {
-			var usrToken = JSON.parse(res.text).token;
+			var usrToken = res.body.token;
 			cb(usrToken);
 		});
 	});
@@ -55,6 +57,7 @@ exports.formatDate = (date) => {
 function registerUser(userData, cb){
 	usr.findOne({username: userData.username}, (err, data) => {
 		if(!data){
+			userData.password = bcrypt.hashSync(userData.password, 8);
 			new usr(userData).save(function(err, user){
 				cb();
 			});

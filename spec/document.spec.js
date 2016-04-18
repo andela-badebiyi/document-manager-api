@@ -12,9 +12,11 @@ var usrToken, doc1, doc2;
 describe('create document', () => {
 	beforeEach( done => {
 		th.dropDocumentDatabase(mongoose, err => {
-			th.login(testUsers.admin, request, token => {
-				usrToken = token
-				done()
+			th.dropUserDatabase(mongoose, err => {
+				th.login(testUsers.admin, request, token => {
+					usrToken = token
+					done()
+				})
 			})
 		})
 	})
@@ -82,6 +84,7 @@ describe('update document', ()=>{
 			done()
 		})
 	})
+
 })
 
 describe('delete document', ()=>{

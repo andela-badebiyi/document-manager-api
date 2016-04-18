@@ -26,6 +26,7 @@
     "moment": "*",
     "supertest": "*",
     "mockgoose": "*",
-    "jasmine": "*"
+    "jasmine": "*",
+    "bcrypt": "*"
   }
 }

@@ -11,12 +11,14 @@ var usrToken, userId, guestId, adminId;
 describe('create roles', function(){
 	beforeEach(function(done){
 		th.dropRoleDatabase(mongoose, function(err){
-			seed.role(()=>{
-				th.login(testUsers.admin, request, function(token){
-					usrToken = token;
-					done();
+			th.dropUserDatabase(mongoose, function(err){
+				seed.role(()=>{
+					th.login(testUsers.admin, request, function(token){
+						usrToken = token;
+						done();
+					});
 				});
-			});
+			})
 		});
 	});
 
@@ -143,7 +145,7 @@ describe('get roles', function(){
 			});
 		});
 	});
-	
+
 	it('should return roles if you are the admin', function(done){
 		request.get('/roles/').set('token', usrToken).end(function(err, res){
 			expect(res.body.response.length).toBe(3);

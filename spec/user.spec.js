@@ -23,7 +23,7 @@ describe('user registration', ()=>{
 			done();
 		});
 	});
-	
+
 	it('should return "incomplete data" for incomplete fields', done=>{
 		request.post('/users').set('Content-Type', 'application/x-www-form-urlencoded')
 		.send(testUsers.no_email).end((err, res)=>{
@@ -33,7 +33,7 @@ describe('user registration', ()=>{
 		});
 	});
 
-	
+
 	it('should reject invalid emails', done=>{
 		request.post('/users').set('Content-Type', 'application/x-www-form-urlencoded').
 		send(testUsers.bodun_conflict).end((err, res)=>{
@@ -62,8 +62,9 @@ describe('user registration', ()=>{
 			done();
 		});
 	});
-	
+
 });
+
 
 describe('user login', ()=>{
 	beforeEach(done=>{
@@ -153,7 +154,7 @@ describe('update user', ()=>{
 		});
 	});
 
-	
+
 	it('should fail if you try to modify a user that isn\'t you', (done)=>{
 		request.patch('/users/anotherUser').set('token', usrToken).set('Content-Type', 'application/x-www-form-urlencoded')
 		.send({email: 'newemail@gmail.com'}).end((err, res)=>{
@@ -164,7 +165,7 @@ describe('update user', ()=>{
 	});
 
 
-	
+
 	it('should successfully update valid user', (done)=>{
 		request.patch('/users/'+testUsers.bodunde.username).set('token', usrToken).set('Content-Type', 'application/x-www-form-urlencoded')
 		.send({email: 'newemail@gmail.com'}).end((err, res)=>{
@@ -173,8 +174,8 @@ describe('update user', ()=>{
 			done();
 		});
 	});
-	
-	
+
+
 	it('should modify different user if you are signed in as admin', (done)=>{
 		th.login(testUsers.admin, request, (token)=>{
 			request.patch('/users/'+testUsers.bodunde.username).set('token', token).set('Content-Type', 'application/x-www-form-urlencoded')
@@ -185,7 +186,7 @@ describe('update user', ()=>{
 			});
 		});
 	});
-	
+
 });
 
 

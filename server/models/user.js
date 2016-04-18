@@ -1,6 +1,7 @@
 var mongoose = require('../database/db');
 var autoIncrement = require('mongoose-auto-increment');
 var uniqueValidator = require('mongoose-unique-validator');
+var bcrypt = require('bcrypt');
 
 var userSchema = new mongoose.Schema({
   username: {
@@ -34,7 +35,13 @@ var userSchema = new mongoose.Schema({
   }
 });
 
+//hash passwords
+userSchema.pre('save', function(next){
+  user = this;
+  this.password = bcrypt.hashSync(user.password, 8);
+  next();
+})
+
 userSchema.plugin(uniqueValidator, {message: 'This {PATH} already exists'});
 userSchema.plugin(autoIncrement.plugin, 'User');
 module.exports = mongoose.model('User', userSchema);
-//match: [/\b[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}\b/gi, "This is not a valid email"],
